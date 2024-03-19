@@ -1,144 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인생네컷</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
-    }
-    
-    #photo-frame {
-        width: 300px;
-        height: 900px; /* 세로로 3장을 보여주기 위해 높이 조정 */
-        border: 5px solid #ccc;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column; /* 세로 정렬을 위해 column으로 설정 */
-        overflow: hidden;
-    }
-    
-    .photo {
-        width: 100%;
-        height: calc(100% / 3); /* 세로로 3장을 보여주기 위해 높이 조정 */
-        box-sizing: border-box;
-        border: 2px solid #fff;
-        background-color: #999;
-        background-size: cover;
-        background-position: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인생네컷</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
 
-    input[type="file"] {
-        display: none;
-    }
+        #photo-frame {
+            width: 300px;
+            height: 700px;
+            border: 5px solid #f6f6f6;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #f4f4f4, #fff);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
 
-    .button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-</style>
+        .photo {
+            width: 100%;
+            height: calc(100% / 3);
+            box-sizing: border-box;
+            border: 2px solid #fff;
+            background-color: #ccc;
+            background-size: cover;
+            background-position: center;
+            transition: all 0.3s ease;
+        }
+
+        .photo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        #photo-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: linear-gradient(to bottom, #f4f4f4, #fff);
+        }
+    </style>
 </head>
+
 <body>
-<div id="photo-frame">
-    <div class="photo"></div>
-    <div class="photo"></div>
-    <div class="photo"></div>
-</div>
-<input type="file" id="fileInput" accept="image/*" multiple>
-<button class="button" onclick="selectPhoto()">사진 선택하기</button>
-<button class="button" onclick="downloadFrame()">틀 및 사진 저장하기</button>
+    <div id="photo-frame">
+        <div class="photo"></div>
+        <div class="photo"></div>
+        <div class="photo"></div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" multiple>
+    <button class="button" onclick="selectPhoto()">사진 선택하기</button>
+    <button class="button" onclick="downloadFrameAndPhotos()">틀 및 사진 저장하기</button>
 
-<script>
-    let currentPhotoIndex = 0;
-    let selectedPhotos = [];
+    <script>
+        let currentPhotoIndex = 0;
+        let selectedPhotos = [];
 
-    function placePhoto() {
-        const photoFrame = document.getElementById('photo-frame');
-        const photo = photoFrame.querySelectorAll('.photo')[currentPhotoIndex];
-        photo.style.backgroundImage = `url('${selectedPhotos[currentPhotoIndex]}')`;
-        currentPhotoIndex++;
-    }
-
-    function selectPhoto() {
-        const input = document.getElementById('fileInput');
-        input.click();
-
-        input.onchange = function(event) {
-            const files = event.target.files;
-
-            if (files.length !== 1) { // 1장의 사진 선택
-                alert("정확히 1장의 사진을 선택하세요.");
-                return;
-            }
-
+        function placePhoto(file) {
+            const photoFrame = document.getElementById('photo-frame');
+            const photo = photoFrame.querySelectorAll('.photo')[currentPhotoIndex];
             const reader = new FileReader();
-            reader.onload = function(e) {
-                selectedPhotos.push(e.target.result);
-                if (currentPhotoIndex < 3) {
-                    placePhoto();
-                }
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const scale = Math.max(photoFrame.offsetWidth / img.width, photoFrame.offsetHeight / img.height);
+                    const width = img.width * scale;
+                    const height = img.height * scale;
+                    photo.style.backgroundImage = `url('${e.target.result}')`;
+                    photo.style.backgroundSize = `${width}px ${height}px`;
+                    currentPhotoIndex++;
+                };
+                img.src = e.target.result;
             };
-            reader.readAsDataURL(files[0]);
-        };
-    }
+            reader.readAsDataURL(file);
+        }
 
-    function downloadFrame() {
-        const photoFrame = document.getElementById('photo-frame');
-        const frameImage = getFrameImage(photoFrame);
+        function selectPhoto() {
+            const input = document.getElementById('fileInput');
+            input.click();
 
-        frameImage.then(function(frameUrl) {
-            const link = document.createElement('a');
-            link.href = frameUrl;
-            link.download = 'photo_frame.jpg';
-            link.click();
-        });
-    }
+            input.onchange = function (event) {
+                const files = event.target.files;
 
-    function getFrameImage(frame) {
-        return new Promise(resolve => {
+                if (files.length !== 1) {
+                    alert("정확히 1장의 사진을 선택하세요.");
+                    return;
+                }
+
+                placePhoto(files[0]);
+            };
+        }
+
+        function downloadFrameAndPhotos() {
             const canvas = document.createElement('canvas');
-            canvas.width = frame.offsetWidth;
-            canvas.height = frame.offsetHeight;
+            canvas.width = 300;
+            canvas.height = 700;
             const ctx = canvas.getContext('2d');
 
-            const photos = frame.querySelectorAll('.photo');
-            const photoPromises = [];
+            const photoFrame = document.getElementById('photo-frame');
+            const frameImage = new Image();
+            frameImage.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='700'%3E%3Crect x='5' y='5' width='290' height='690' fill='none' stroke='%23ccc' stroke-width='10' rx='10'/%3E%3C/svg%3E";
+            frameImage.onload = function () {
+                ctx.drawImage(frameImage, 0, 0, 300, 700);
 
-            for (let i = 0; i < photos.length; i++) {
-                const photo = photos[i];
-                const photoUrl = photo.style.backgroundImage.slice(4, -1).replace(/"/g, "");
-                const photoPromise = new Promise(resolve => {
+                const photos = photoFrame.querySelectorAll('.photo');
+
+                for (let i = 0; i < photos.length; i++) {
+                    const photo = photos[i];
+                    const photoUrl = photo.style.backgroundImage.slice(4, -1).replace(/"/g, "");
                     const img = new Image();
                     img.crossOrigin = 'anonymous';
-                    img.onload = function() {
-                        ctx.drawImage(img, 0, i * (canvas.height / photos.length), canvas.width, canvas.height / photos.length);
-                        resolve();
+                    img.onload = function () {
+                        ctx.drawImage(img, 5, 5 + i * (canvas.height / photos.length), 290, (canvas.height / photos.length) - 10);
+                        if (i === photos.length - 1) {
+                            const link = document.createElement('a');
+                            link.href = canvas.toDataURL('image/jpeg');
+                            link.download = 'photo_frame_with_photos.jpg';
+                            link.click();
+                        }
                     };
                     img.src = photoUrl;
-                });
-                photoPromises.push(photoPromise);
-            }
-
-            Promise.all(photoPromises).then(() => {
-                URL.revokeObjectURL(frameUrl);
-                resolve(canvas.toDataURL('image/jpeg'));
-            });
-        });
-    }
-</script>
+                }
+            };
+        }
+    </script>
 </body>
+
 </html>
-`
