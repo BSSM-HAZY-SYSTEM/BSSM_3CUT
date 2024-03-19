@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인생네컷</title>
+    <title>인생3컷</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #000;
         }
 
         #photo-frame {
@@ -28,6 +28,8 @@
             background: linear-gradient(to bottom, #f4f4f4, #fff);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
+            margin-right: 20px;
+            margin-bottom: 20px;
         }
 
         .photo {
@@ -50,6 +52,11 @@
             display: none;
         }
 
+        .button-container {
+            display: flex;
+            flex-direction: column;
+        }
+
         .button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -57,7 +64,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
+            margin: 0 0 10px 0;
             transition: background-color 0.3s ease;
         }
 
@@ -75,18 +82,29 @@
             z-index: -1;
             background-image: linear-gradient(to bottom, #f4f4f4, #fff);
         }
+
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            height: auto;
+        }
     </style>
 </head>
 
 <body>
+    <img id="logo" src="image.png" alt="logo"> 
     <div id="photo-frame">
         <div class="photo"></div>
         <div class="photo"></div>
         <div class="photo"></div>
     </div>
     <input type="file" id="fileInput" accept="image/*" multiple>
-    <button class="button" onclick="selectPhoto()">사진 선택하기</button>
-    <button class="button" onclick="downloadFrameAndPhotos()">틀 및 사진 저장하기</button>
+    <div class="button-container">
+        <button class="button" onclick="selectPhoto()">사진 선택하기</button>
+        <button class="button" onclick="downloadFrameAndPhotos()">세 컷 저장하기</button>
+    </div>
 
     <script>
         let currentPhotoIndex = 0;
