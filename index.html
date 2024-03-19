@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생3컷</title>
+    <link rel="icon" type="image/png" href="image1.png">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +17,8 @@
             align-items: center;
             height: 100vh;
             background-color: #000;
+            position: relative;
+            /* Added */
         }
 
         #photo-frame {
@@ -90,20 +94,31 @@
             width: 100px;
             height: auto;
         }
+
+        #footer-logo {
+    position: absolute;
+    bottom: 10px; 
+    right: 30px; 
+    width: 90px; 
+    height: auto; 
+}
+
     </style>
 </head>
 
 <body>
-    <img id="logo" src="image.png" alt="logo"> 
+    <img id="logo" src="image.png" alt="logo">
     <div id="photo-frame">
         <div class="photo"></div>
         <div class="photo"></div>
         <div class="photo"></div>
     </div>
+    <img id="footer-logo" src="footer.png" alt="Footer Logo"> 
     <input type="file" id="fileInput" accept="image/*" multiple>
     <div class="button-container">
         <button class="button" onclick="selectPhoto()">사진 선택하기</button>
         <button class="button" onclick="downloadFrameAndPhotos()">세 컷 저장하기</button>
+        <button class="button" onclick="deletePhotos()">사진 지우기</button>
     </div>
 
     <script>
@@ -136,12 +151,9 @@
             input.onchange = function (event) {
                 const files = event.target.files;
 
-                if (files.length !== 1) {
-                    alert("정확히 1장의 사진을 선택하세요.");
-                    return;
+                for (let i = 0; i < files.length; i++) {
+                    placePhoto(files[i]);
                 }
-
-                placePhoto(files[0]);
             };
         }
 
@@ -176,6 +188,15 @@
                     img.src = photoUrl;
                 }
             };
+        }
+
+        function deletePhotos() {
+            const photoFrame = document.getElementById('photo-frame');
+            const photos = photoFrame.querySelectorAll('.photo');
+            photos.forEach(photo => {
+                photo.style.backgroundImage = '';
+            });
+            currentPhotoIndex = 0;
         }
     </script>
 </body>
