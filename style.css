@@ -1,0 +1,94 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+    position: relative;
+}
+
+#photo-frame {
+    width: 300px;
+    height: 700px;
+    border: 5px solid #f6f6f6;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #f4f4f4, #fff);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.photo {
+    width: 100%;
+    height: calc(100% / 3);
+    box-sizing: border-box;
+    border: 2px solid #fff;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
+}
+
+.photo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 0 10px 0;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+#photo-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: linear-gradient(to bottom, #f4f4f4, #fff);
+}
+
+#logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100px;
+    height: auto;
+}
+
+#footer-logo {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    width: 90px;
+    height: auto;
+}
